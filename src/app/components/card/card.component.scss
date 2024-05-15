@@ -1,0 +1,23 @@
+:host {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+.card {
+  height: 110px;
+  width: 90px;
+  margin: 5px;
+  padding: 5px;
+  border: 2px solid red;
+  border-radius: 4px;
+  background: white;
+
+  .name {
+    user-select: none;
+  }
+
+  .initiative {
+    user-select: none;
+  }
+}

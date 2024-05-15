@@ -1,0 +1,35 @@
+.battle-map {
+  display: block;
+
+  &_row {
+    display: flex;
+    height: 120px;
+  }
+
+  &_cell {
+    height: 120px;
+    width: 100px;
+    border: 1px solid black;
+    position: relative;
+  }
+
+  .pos {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    height: 120px;
+    width: 100px;
+    text-align: center;
+    line-height: 120px;
+    opacity: .3;
+    user-select: none;
+    z-index: -1;
+  }
+
+  app-card {
+    z-index: 1;
+    pointer-events: all;
+    position: absolute;
+  }
+}

@@ -1,0 +1,38 @@
+<!--<mat-form-field class="example-full-width">-->
+<!--  <mat-label>Unit A</mat-label>-->
+<!--  <input type="text"-->
+<!--         placeholder="Pick one"-->
+<!--         aria-label="Unit A"-->
+<!--         matInput-->
+<!--         [formControl]="unitAControl"-->
+<!--         [matAutocomplete]="unitA">-->
+<!--  <mat-autocomplete #unitA="matAutocomplete">-->
+<!--    <mat-option *ngFor="let option of filteredUnitAOptions | async" [value]="name(option.id)">-->
+<!--      {{name(option.id)}}-->
+<!--    </mat-option>-->
+<!--  </mat-autocomplete>-->
+<!--</mat-form-field> <span class="vs">vs</span>-->
+
+
+<div class="battle-map">
+  <div class="battle-map_row" *ngFor="let row of rows">
+    <div class="battle-map_cell" *ngFor="let cell of cells" id="{{row}}.{{cell}}">
+      <span class="pos">
+        {{row}} . {{cell}}
+      </span>
+      <ng-container *ngIf="isCardPresent(row, cell)">
+        <app-card
+          [card]="getCard(row, cell)"
+          (move)="moveCard($event)"
+        ></app-card>
+      </ng-container>
+    </div>
+  </div>
+  <app-line
+    [source]="moveLine.source"
+    [target]="moveLine.target"
+  ></app-line>
+</div>
+
+<button (click)="state.transition('START')">START</button>
+<button (click)="nextMove()">NEXT</button>
