@@ -1,8 +1,45 @@
-<div class="card" cdkDrag (cdkDragEnded)="snap($event)">
+<!--cdkDragDisabled="{{!isHighlighted}}"-->
+<div class="card" cdkDrag (cdkDragEnded)="snap($event)"
+[class.isHighlighted]="isHighlighted"
+>
   <span class="name">
     {{ _card.name }}
   </span>
-  <span class="initiative">
+  <div class="initiative">
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Initiative"
+      fontIcon="directions_run">
+    </mat-icon>
     {{ _card.initiative }}
-  </span>
+  </div>
+<!--  <button-->
+<!--    *ngIf="isHighlighted"-->
+<!--    (click)="use()"-->
+<!--  >-->
+<!--    use-->
+<!--  </button>-->
+<!--  <button-->
+<!--    *ngIf="state !== 'IDLE'"-->
+<!--  (click)="delete()"-->
+<!--  >-->
+<!--    Del-->
+<!--  </button>-->
+  <div class="card_toolbar">
+    <mat-icon
+      *ngIf="isHighlighted"
+      (click)="use()"
+      aria-hidden="false"
+      aria-label="Use card"
+      fontIcon="check_circle">
+    </mat-icon>
+    <mat-icon
+      *ngIf="state !== 'IDLE'"
+      (click)="delete()"
+      aria-hidden="false"
+      aria-label="Delete card"
+      fontIcon="delete">
+    </mat-icon>
+  </div>
+
 </div>

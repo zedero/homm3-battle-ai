@@ -7,11 +7,19 @@
 .card {
   height: 110px;
   width: 90px;
-  margin: 5px;
+  margin: 4px;
   padding: 5px;
   border: 2px solid red;
   border-radius: 4px;
   background: white;
+
+  mat-icon {
+    margin: 0;
+  }
+
+  &.isHighlighted {
+    border-color: blue;
+  }
 
   .name {
     user-select: none;
@@ -19,5 +27,11 @@
 
   .initiative {
     user-select: none;
+    display: flex;
+  }
+
+  &_toolbar {
+    display: flex;
+    justify-content: space-between;
   }
 }

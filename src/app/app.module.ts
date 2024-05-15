@@ -26,6 +26,7 @@ import { BattleBoardComponent } from './components/battle-board/battle-board.com
 import { CardComponent } from './components/card/card.component';
 import { LineComponent } from './components/line/line.component';
 import {CdkDrag} from "@angular/cdk/drag-drop";
+import {DefaultIfNullPipe} from "./services/defaultIfNull";
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import {CdkDrag} from "@angular/cdk/drag-drop";
         MatTooltipModule,
         MatIconModule,
         CdkDrag,
+        DefaultIfNullPipe,
     ],
   providers: [],
   bootstrap: [AppComponent]

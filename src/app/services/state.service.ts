@@ -13,7 +13,7 @@ export class StateService {
   }
 
   public transition(newState: string) {
-    console.log('NEW STATE: ', newState)
+    console.log('CURRENT STATE: ', newState, this.state)
     this.state.next(newState);
   }
 

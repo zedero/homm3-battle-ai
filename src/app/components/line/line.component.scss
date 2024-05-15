@@ -17,10 +17,22 @@ hr {
   animation: linearGradientMove .3s infinite linear;
   border: none;
   height: $width;
+  pointer-events: none;
 }
 
 @keyframes linearGradientMove {
   100% {
     background-position: $length 0, -$length 100%, 0 -$length, 100% $length;
   }
+}
+
+.card {
+  position: absolute;
+  height: 110px;
+  width: 90px;
+  margin: 5px;
+  padding: 5px;
+  border: 2px dashed grey;
+  border-radius: 4px;
+  background: white;
 }

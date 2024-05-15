@@ -16,14 +16,28 @@ export type MoveCard = {
 })
 export class CardComponent implements OnChanges {
   @Input() public card!: Card | undefined;
+  @Input() public highlighted!: string[];
+  @Input() public state!: string;
   @Output() public move = new EventEmitter<MoveCard>();
+  @Output() public deleteCard = new EventEmitter<Card>();
+  @Output() public useCard = new EventEmitter<Card>();
   protected _card!: Card;
+
+  isHighlighted = false;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['card'] ) {
       if ( this.card ) {
         this._card = this.card;
       }
+    }
+    if (changes['highlighted'] ) {
+      this.isHighlighted = false;
+      this.highlighted.forEach((unit) => {
+        if (unit === this._card.name) {
+          this.isHighlighted = true;
+        }
+      })
     }
   }
 
@@ -43,5 +57,12 @@ export class CardComponent implements OnChanges {
     this.move.emit({card: this._card, position: {row: pos[0], cell: pos[1]}})
   }
 
+  delete() {
+    this.deleteCard.emit(this._card);
+  }
+
+  use() {
+    this.useCard.emit(this._card);
+  }
 
 }

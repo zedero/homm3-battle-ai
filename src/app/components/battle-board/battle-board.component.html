@@ -23,7 +23,11 @@
       <ng-container *ngIf="isCardPresent(row, cell)">
         <app-card
           [card]="getCard(row, cell)"
+          [highlighted]="highlightedUnits$ | async | defaultIfNull: []"
+          [state]="state$ | async | defaultIfNull: 'IDLE'"
           (move)="moveCard($event)"
+          (useCard)="useCard($event)"
+          (deleteCard)="removeCardFromGame($event)"
         ></app-card>
       </ng-container>
     </div>
@@ -34,5 +38,13 @@
   ></app-line>
 </div>
 
-<button (click)="state.transition('START')">START</button>
-<button (click)="nextMove()">NEXT</button>
+<button
+  *ngIf="state$.value === 'IDLE'"
+  (click)="state.transition('START')"
+>START</button>
+<button
+  *ngIf="state$.value !== 'IDLE'"
+  (click)="nextMove()"
+>NEXT</button>
+
+{{highlightedUnits$ | async | json}}

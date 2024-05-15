@@ -25,6 +25,7 @@ export type GameState = {
 })
 export class BattleBoardComponent  implements OnInit {
   public state$: BehaviorSubject<string>;
+  public highlightedUnits$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public state: StateService;
 
 
@@ -34,8 +35,8 @@ export class BattleBoardComponent  implements OnInit {
   }
 
   moveLine: Line = {
-    source:  {x: 0, y: 0},
-    target:  {x: 0, y: 0},
+    source:  {x: -1, y: -1},
+    target:  {x: -1, y: -1},
   }
 
   turnState: GameState = {
@@ -71,7 +72,7 @@ export class BattleBoardComponent  implements OnInit {
     }
   },{
     tier: TIER.BRONZE,
-    initiative: 5,
+    initiative: 3,
     name: 'Zombies',
     type: TYPE.MELEE,
     canTeleport: false,
@@ -79,6 +80,17 @@ export class BattleBoardComponent  implements OnInit {
     position: {
       row: 1,
       cell: 1
+    }
+  },{
+    tier: TIER.BRONZE,
+    initiative: 4,
+    name: 'Wraiths',
+    type: TYPE.MELEE,
+    canTeleport: false,
+    isEnemy: true,
+    position: {
+      row: 1,
+      cell: 2
     }
   },{
     tier: TIER.BRONZE,
@@ -136,10 +148,20 @@ export class BattleBoardComponent  implements OnInit {
     );
 
     this.state$.subscribe((state) => {
+      if (state === 'IDLE') {
+        this.highlightedUnits$.next([]);
+      }
+      if (state === 'PLAYER.END') {
+        this.state.transition('NEXT_UNIT')
+      }
+      if (state === 'ROUND_END') {
+        console.log('@@ END OF THE ROUND, ASK FOR AN OTHER ROUND')
+        this.state.transition('IDLE');
+      }
       if (state === 'START') {
         this.startBattle();
       }
-      if (state === 'BATTLE') {
+      if (state === 'NEXT_UNIT') {
         this.nextMove();
       }
     });
@@ -178,12 +200,18 @@ export class BattleBoardComponent  implements OnInit {
   }
 
   public moveCard(movedCard: MoveCard) {
+    // console.log('! MOVE', movedCard.card.name, movedCard.position.row, movedCard.position.cell)
     const card = this.placedCards.find(card => card.name === movedCard.card.name);
     if (!card) {
       return;
     }
     card.position.row = movedCard.position.row;
     card.position.cell = movedCard.position.cell;
+  }
+
+  public useCard(useCard: Card) {
+    this.removeCardFromQueue(useCard);
+    this.state.transition('PLAYER.END');
   }
 
 
@@ -195,8 +223,7 @@ export class BattleBoardComponent  implements OnInit {
       isPlayerTurn: true,
       cardQueue: battleCards
     }
-    // this.test(battleCards);
-    this.state.transition('BATTLE');
+    this.state.transition('NEXT_UNIT');
   }
 
   getNextHighestInitiative(cards: Card[]) {
@@ -204,10 +231,20 @@ export class BattleBoardComponent  implements OnInit {
     return Array.from(initiatives).sort().reverse()[0];
   }
 
+  removeCardFromQueue = (cardToRemove: Card) => {
+    console.log('@@', cardToRemove.name)
+    this.turnState.cardQueue = this.turnState.cardQueue.filter((card: Card) => card.name !== cardToRemove.name);
+  }
 
   nextMove() {
+    this.highlightedUnits$.next([]);
+
+    this.moveLine = {
+      source:  {x: -1, y: -1},
+      target:  {x: -1, y: -1},
+    };
     if (this.turnState.cardQueue.length === 0) {
-      console.log('Game Over');
+      this.state.transition('ROUND_END');
       return
     }
 
@@ -215,6 +252,23 @@ export class BattleBoardComponent  implements OnInit {
     const removeCardFromQueue = (cardToRemove: Card) => {
       console.log('@@', cardToRemove.name)
       this.turnState.cardQueue = this.turnState.cardQueue.filter((card: Card) => card.name !== cardToRemove.name);
+    }
+
+    const moveEnemyCard = (card: Card) => {
+      removeCardFromQueue(card);
+      const row = Math.floor(Math.random() * 4)
+      const cell = Math.floor(Math.random() * 4)
+      this.moveLine = {
+        source: {x: card.position.cell, y: card.position.row},
+        target: {x: cell, y: row},
+      }
+      this.moveCard({
+        card,
+        position: {
+          row,
+          cell
+        }
+      })
     }
 
 
@@ -225,10 +279,14 @@ export class BattleBoardComponent  implements OnInit {
     if (this.turnState.isPlayerTurn && !!possibleCards.filter((card: Card) => {
       return !card.isEnemy
     }).length) {
-      this.state.transition('PLAYER');
-      removeCardFromQueue(possibleCards.filter((card: Card) => {
+      this.state.transition('PLAYER.TURN');
+      // removeCardFromQueue(possibleCards.filter((card: Card) => {
+      //   return !card.isEnemy
+      // })[0]);
+      const possibleUnits = possibleCards.filter((card: Card) => {
         return !card.isEnemy
-      })[0]);
+      });
+      this.highlightedUnits$.next(possibleUnits ? possibleUnits.map((unit) => unit.name) : [])
     } else if (!!possibleCards.filter((card: Card) => {
       return card.isEnemy
     }).length) {
@@ -236,16 +294,16 @@ export class BattleBoardComponent  implements OnInit {
         return card.isEnemy
       })[0]
       this.state.transition('ENEMY');
-      removeCardFromQueue(card);
-      this.moveLine = {
-        source: {x: card.position.cell, y: card.position.row},
-        target: {x: Math.floor(Math.random() * 4), y: Math.floor(Math.random() * 4)},
-      }
+      moveEnemyCard(card);
     } else {
-      this.state.transition('PLAYER');
+      this.state.transition('PLAYER.TURN');
       removeCardFromQueue(possibleCards.filter((card: Card) => {
         return !card.isEnemy
       })[0]);
+      const possibleUnits = possibleCards.filter((card: Card) => {
+        return !card.isEnemy
+      });
+      this.highlightedUnits$.next(possibleUnits ? possibleUnits.map((unit) => unit.name) : [])
     }
 
     this.turnState.isPlayerTurn = !this.turnState.isPlayerTurn;
@@ -275,17 +333,7 @@ export class BattleBoardComponent  implements OnInit {
   }
 
 
-  test(battleCards: any) {
-    const source = battleCards.find((unit: any) => !unit.isEnemy);
-    const target = battleCards.find((unit: any) => unit.isEnemy);
-    if (!source || !target) {
-      return;
-    }
-    this.moveLine = {
-      source: {x: source.position.cell, y: source.position.row},
-      target: {x: target.position.cell, y: target.position.row},
-    }
-  }
+
 
   removeCardFromGame = (cardToRemove: Card) => {
     console.log('@@', cardToRemove.name)
