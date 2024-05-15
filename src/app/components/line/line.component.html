@@ -1,15 +1,21 @@
-<hr
-[style.top.px]="top"
-[style.left.px]="left"
-[style.width.px]="length"
-[style.rotate]="orientation + 'deg'"
+
+<span class="line"
+      [style.top.px]="top"
+      [style.left.px]="left"
+      [style.rotate]="orientation + 'deg'"
 >
-<mat-icon
-  aria-hidden="false"
-  aria-label="Initiative"
-  fontIcon="arrow_drop_up">
+  <hr
+
+    [style.width.px]="length"
+  >
+  <mat-icon
+    aria-hidden="false"
+    aria-label="Initiative"
+    fontIcon="play_arrow">
 </mat-icon>
+</span>
 <div
   [style.top.px]="top - 60 "
   [style.left.px]="left - 50"
-  class="card"></div>
+  class="card">
+</div>

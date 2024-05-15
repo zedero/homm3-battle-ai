@@ -83,7 +83,7 @@ export class BattleBoardComponent  implements OnInit {
     }
   },{
     tier: TIER.BRONZE,
-    initiative: 4,
+    initiative: 5,
     name: 'Wraiths',
     type: TYPE.MELEE,
     canTeleport: false,

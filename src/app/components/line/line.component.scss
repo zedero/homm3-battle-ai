@@ -1,12 +1,23 @@
 $length: 16px;
 $width: 4px;
 
-hr {
+.line {
   z-index: 1000;
-  pointer-events: none;
+  //pointer-events: none;
   position: absolute;
 
   transform-origin: top left;
+
+  mat-icon {
+    position: absolute;
+    right: -10px;
+    top: -8px;
+    color: #aaa;
+  }
+
+}
+
+hr {
   margin: 0;
   padding: 0;
 
