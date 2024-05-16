@@ -1,18 +1,25 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {Card} from "../../config/data";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import { Card } from '../../config/data';
 
 export type MoveCard = {
-  card: Card,
+  card: Card;
   position: {
-    row: number,
-    cell: number
-  }
-}
+    x: number;
+    y: number;
+  };
+};
 
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  styleUrls: ['./card.component.scss'],
 })
 export class CardComponent implements OnChanges {
   @Input() public card!: Card | undefined;
@@ -24,37 +31,47 @@ export class CardComponent implements OnChanges {
   protected _card!: Card;
 
   isHighlighted = false;
+  isEnemy = false;
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['card'] ) {
-      if ( this.card ) {
+    if (changes['card']) {
+      if (this.card) {
         this._card = this.card;
+        this.isEnemy = this._card.isEnemy;
       }
     }
-    if (changes['highlighted'] ) {
+    if (changes['highlighted']) {
       this.isHighlighted = false;
       this.highlighted.forEach((unit) => {
         if (unit === this._card.name) {
           this.isHighlighted = true;
         }
-      })
+      });
     }
   }
 
   public snap(event: any) {
-    const collisionElements = document.elementsFromPoint(event.event.clientX, event.event.clientY);
+    const collisionElements = document.elementsFromPoint(
+      event.event.clientX,
+      event.event.clientY,
+    );
 
     const target = collisionElements.find((element: Element) => {
-      return element.className === "battle-map_cell";
+      return element.className === 'battle-map_cell';
     });
 
     if (!target?.id) {
-      return
+      return;
     }
     // this.snapToCell(target.id);
 
-    const pos = target.id.split('.').map((a)=>{return Number(a)});
-    this.move.emit({card: this._card, position: {row: pos[0], cell: pos[1]}})
+    const pos = target.id.split('.').map((a) => {
+      return Number(a);
+    });
+    this.move.emit({
+      card: this._card,
+      position: { x: pos[0], y: pos[1] },
+    });
   }
 
   delete() {
@@ -64,5 +81,4 @@ export class CardComponent implements OnChanges {
   use() {
     this.useCard.emit(this._card);
   }
-
 }

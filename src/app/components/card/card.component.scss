@@ -9,9 +9,13 @@
   width: 90px;
   margin: 4px;
   padding: 5px;
-  border: 2px solid red;
+  border: 2px solid forestgreen;
   border-radius: 4px;
   background: white;
+
+  &.isEnemy {
+    border-color: red;
+  }
 
   mat-icon {
     margin: 0;

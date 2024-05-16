@@ -15,14 +15,14 @@
 
 
 <div class="battle-map">
-  <div class="battle-map_row" *ngFor="let row of rows">
-    <div class="battle-map_cell" *ngFor="let cell of cells" id="{{row}}.{{cell}}">
+  <div class="battle-map_row" *ngFor="let y of rows">
+    <div class="battle-map_cell" *ngFor="let x of cells" id="{{x}}.{{y}}">
       <span class="pos">
-        {{row}} . {{cell}}
+        {{x}} . {{y}}
       </span>
-      <ng-container *ngIf="isCardPresent(row, cell)">
+      <ng-container *ngIf="isCardPresent(x, y)">
         <app-card
-          [card]="getCard(row, cell)"
+          [card]="getCard(x, y)"
           [highlighted]="highlightedUnits$ | async | defaultIfNull: []"
           [state]="state$ | async | defaultIfNull: 'IDLE'"
           (move)="moveCard($event)"
@@ -35,6 +35,11 @@
   <app-line
     [source]="moveLine.source"
     [target]="moveLine.target"
+  ></app-line>
+  <app-line
+    [source]="attackLine.source"
+    [target]="attackLine.target"
+    [isAttack]="true"
   ></app-line>
 </div>
 

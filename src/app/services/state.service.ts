@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
-import {BehaviorSubject} from "rxjs";
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StateService {
-
   public state = new BehaviorSubject<string>('IDLE');
 
-  constructor() {
-
-  }
+  constructor() {}
 
   public transition(newState: string) {
-    console.log('CURRENT STATE: ', newState, this.state)
+    console.log('CURRENT STATE: ', newState);
     this.state.next(newState);
   }
-
-
 }

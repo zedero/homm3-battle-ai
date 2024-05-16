@@ -1,23 +1,23 @@
-import { DUNGEON } from "./dungeon";
-import { CASTLE } from "./castle";
-import { NECROPOLIS } from "./necropolis";
-import {NEUTRAL} from "./neutral";
-import {TOWER} from "./tower";
-import {RAMPART} from "./rampart";
-import {FORTRESS} from "./fortress";
-import {INFERNO} from "./inferno";
+import { DUNGEON } from './dungeon';
+import { CASTLE } from './castle';
+import { NECROPOLIS } from './necropolis';
+import { NEUTRAL } from './neutral';
+import { TOWER } from './tower';
+import { RAMPART } from './rampart';
+import { FORTRESS } from './fortress';
+import { INFERNO } from './inferno';
 
 export enum TIER {
-  "BRONZE",
-  "SILVER",
-  "GOLD",
-  "AZURE"
+  'BRONZE',
+  'SILVER',
+  'GOLD',
+  'AZURE',
 }
 
 export enum TYPE {
   MELEE,
   RANGED,
-  FLYING
+  FLYING,
 }
 
 export type Card = {
@@ -28,10 +28,10 @@ export type Card = {
   canTeleport: boolean;
   isEnemy: boolean;
   position: {
-    row: number,
-    cell: number
-  }
-}
+    x: number;
+    y: number;
+  };
+};
 
 export type Unit = {
   id: string;
@@ -42,10 +42,10 @@ export type Unit = {
   ranged: boolean;
   special: number[];
   upgradeFrom: string;
-  costs: [number,number];
+  costs: [number, number];
   faction: string;
   tier: string;
-}
+};
 
 export const UNITS: Unit[] = [
   ...DUNGEON,
@@ -55,5 +55,5 @@ export const UNITS: Unit[] = [
   ...RAMPART,
   ...FORTRESS,
   ...INFERNO,
-  ...NEUTRAL
-]
+  ...NEUTRAL,
+];

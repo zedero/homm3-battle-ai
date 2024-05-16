@@ -1,6 +1,7 @@
 <!--cdkDragDisabled="{{!isHighlighted}}"-->
 <div class="card" cdkDrag (cdkDragEnded)="snap($event)"
 [class.isHighlighted]="isHighlighted"
+[class.isEnemy]="isEnemy"
 >
   <span class="name">
     {{ _card.name }}

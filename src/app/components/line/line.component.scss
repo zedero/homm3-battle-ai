@@ -10,9 +10,18 @@ $width: 4px;
 
   mat-icon {
     position: absolute;
-    right: -10px;
-    top: -8px;
     color: #aaa;
+    margin: 0;
+
+    &.line_source {
+      left: -10px;
+      top: -8px;
+    }
+
+    &.line_target {
+      right: -10px;
+      top: -8px;
+    }
   }
 
 }
@@ -33,7 +42,7 @@ hr {
 
 @keyframes linearGradientMove {
   100% {
-    background-position: $length 0, -$length 100%, 0 -$length, 100% $length;
+    background-position: $length 0, (-$length) 100%, 0 (-$length), 100% $length;
   }
 }
 
@@ -46,4 +55,30 @@ hr {
   border: 2px dashed grey;
   border-radius: 4px;
   background: white;
+}
+
+.attack {
+  position: absolute;
+  top: -10px;
+  //right: 50%;
+  left: -17px;
+  rotate: -90deg;
+}
+
+.line.attack {
+  color: mediumvioletred;
+  border-color: mediumvioletred !important;
+  mat-icon {
+    color: mediumvioletred;
+  }
+  hr {
+    //background:
+    //  linear-gradient(90deg, #c71585 50%, transparent 0) repeat-x;
+    //  background-size: $length $width, $length $width, $width $length, $width $length;
+    //  background-position: 0 0, 0 100%, 0 0, 100% 0;
+    //  //animation: linearGradientMove .3s infinite linear;
+    background: mediumvioletred;
+    border: 2px solid mediumvioletred;
+    animation: none;
+  }
 }
