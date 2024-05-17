@@ -27,8 +27,8 @@ export class AiService {
       moveTo = source.position;
     } else {
       const target = this.getMeleeTarget(units, source);
-      attackTarget = target.target;
-      moveTo = this.toPoint(target.path[target.path.length - 2]);
+      attackTarget = target?.target;
+      moveTo = this.toPoint(target?.path[target?.path.length - 2]);
     }
     return {
       attackTarget,
@@ -94,7 +94,7 @@ export class AiService {
         });
       }
     });
-    console.log(reachableTargets);
+    // console.log(reachableTargets);
     return reachableTargets[0];
   }
   private getFlyingTarget(units: Card[], source: Card) {

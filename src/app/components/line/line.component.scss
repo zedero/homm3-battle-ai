@@ -61,13 +61,17 @@ hr {
   position: absolute;
   top: -10px;
   //right: 50%;
-  left: -17px;
+  right: -17px;
   rotate: -90deg;
 }
 
 .line.attack {
   color: mediumvioletred;
   border-color: mediumvioletred !important;
+
+  .line_target {
+    right: 0px;
+  }
   mat-icon {
     color: mediumvioletred;
   }

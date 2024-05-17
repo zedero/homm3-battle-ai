@@ -26,12 +26,16 @@ export class LineComponent implements OnChanges {
   public length = 0;
   public orientation = 0;
 
+  private offset = 0;
   private width = 120;
   private height = 100;
 
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['isAttack']) {
+      this.offset = this.isAttack ? 10 : 0;
+    }
     if (changes['source'] || changes['target']) {
       this.calculateLine(
         {
@@ -58,9 +62,9 @@ export class LineComponent implements OnChanges {
       orientation += 360;
     }
 
-    this.length = length;
+    this.length = length - this.offset;
     this.orientation = orientation;
-    this.top = point1.y + 60;
+    this.top = point1.y + 60 + this.offset;
     this.left = point1.x + 50;
   }
 }

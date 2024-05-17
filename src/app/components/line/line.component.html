@@ -15,7 +15,7 @@
     fontIcon="circle">
 </mat-icon>
   <hr
-    [style.width.px]="length"
+    [style.width.px]="isAttack ? length - 10 : length"
   >
   <mat-icon
     class="line_target"
@@ -25,6 +25,7 @@
 </mat-icon>
 <span
   *ngIf="isAttack"
+  [style.rotate]="-orientation + 'deg'"
   class="material-symbols-outlined attack">swords</span>
 </span>
 <div
