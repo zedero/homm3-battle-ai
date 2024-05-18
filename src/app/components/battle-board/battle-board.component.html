@@ -48,8 +48,8 @@
   (click)="state.transition('START')"
 >START</button>
 <button
-  *ngIf="state$.value !== 'IDLE'"
+  *ngIf="state$.value !== 'IDLE' && state$.value !== 'PLAYER.TURN'"
   (click)="nextMove()"
 >NEXT</button>
 
-{{highlightedUnits$ | async | json}}
+<!--{{highlightedUnits$ | async | json}}-->

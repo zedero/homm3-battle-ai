@@ -1,36 +1,54 @@
-
+<!-- Move Line -->
+<ng-container *ngIf="length && !isAttack">
 <span class="line"
-      [class.attack]="isAttack"
-      *ngIf="length"
       [style.top.px]="top"
       [style.left.px]="left"
       [style.rotate]="orientation + 'deg'"
       [style.width.px]="length"
 >
   <mat-icon
-    *ngIf="!isAttack"
     class="line_source"
     aria-hidden="false"
     aria-label="Initiative"
     fontIcon="circle">
-</mat-icon>
+  </mat-icon>
   <hr
-    [style.width.px]="isAttack ? length - 10 : length"
+    [style.width.px]="length"
   >
   <mat-icon
     class="line_target"
     aria-hidden="false"
     aria-label="Initiative"
     fontIcon="play_arrow">
-</mat-icon>
-<span
-  *ngIf="isAttack"
-  [style.rotate]="-orientation + 'deg'"
-  class="material-symbols-outlined attack">swords</span>
+  </mat-icon>
 </span>
 <div
-  *ngIf="!isAttack"
   [style.top.px]="top - 60 "
   [style.left.px]="left - 50"
   class="card">
 </div>
+</ng-container>
+<!-- Attack Line -->
+
+<span class="line attack"
+      *ngIf="length && isAttack"
+      [style.top.px]="top"
+      [style.left.px]="left"
+      [style.rotate]="orientation + 'deg'"
+      [style.width.px]="length"
+>
+  <hr
+    [style.width.px]="length - 10"
+  >
+  <mat-icon
+    class="line_target"
+    aria-hidden="false"
+    aria-label="Initiative"
+    fontIcon="play_arrow">
+  </mat-icon>
+  <span
+  *ngIf="isAttack"
+  [style.rotate]="-orientation + 'deg'"
+  class="material-symbols-outlined attack">swords
+  </span>
+</span>

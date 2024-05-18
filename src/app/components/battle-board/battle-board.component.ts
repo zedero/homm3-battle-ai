@@ -360,23 +360,14 @@ export class BattleBoardComponent implements OnInit {
           source: data.moveTo,
           target: data.attackTarget?.position,
         };
+      } else if (data.moveTo) {
+        moveEnemyCard(card, data.moveTo);
       }
       console.log('@', this.attackLine, this.moveLine, data);
 
       this.state.transition('ENEMY.TURN');
     } else {
       this.state.transition('PLAYER.TURN');
-      // removeCardFromQueue(
-      //   possibleCards.filter((card: Card) => {
-      //     return !card.isEnemy;
-      //   })[0],
-      // );
-      // const possibleUnits = possibleCards.filter((card: Card) => {
-      //   return !card.isEnemy;
-      // });
-      // this.highlightedUnits$.next(
-      //   possibleUnits ? possibleUnits.map((unit) => unit.name) : [],
-      // );
       const possibleUnits = possibleCards.filter((card: Card) => {
         return !card.isEnemy;
       });

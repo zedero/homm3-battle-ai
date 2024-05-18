@@ -26,9 +26,18 @@ export class AiService {
       attackTarget = this.getRangedTarget(units, source);
       moveTo = source.position;
     } else {
-      const target = this.getMeleeTarget(units, source);
-      attackTarget = target?.target;
-      moveTo = this.toPoint(target?.path[target?.path.length - 2]);
+      const target: Target = this.getMeleeTarget(units, source);
+
+      if (target.path.length > 5 || target.path.length === 0) {
+        console.log('target', target.path.length, target);
+        attackTarget = undefined;
+        if (target.path.length > 0) {
+          moveTo = this.toPoint(target?.path[3]);
+        }
+      } else {
+        attackTarget = target?.target;
+        moveTo = this.toPoint(target?.path[target?.path.length - 2]);
+      }
     }
     return {
       attackTarget,
@@ -75,6 +84,8 @@ export class AiService {
     const prioritizeTargets = this.prioritizeTargets(targets, source);
 
     const reachableTargets: Target[] = [];
+    const justOutOfReachTargets: Target[] = [];
+
     prioritizeTargets.forEach((unit) => {
       const grid = this.getGrid(units);
       grid.setWalkableAt(unit.position.x, unit.position.y, true); // set target as walkable
@@ -92,10 +103,17 @@ export class AiService {
           target: unit,
           path,
         });
+      } else if (path.length > 5) {
+        justOutOfReachTargets.push({
+          target: unit,
+          path,
+        });
       }
     });
-    // console.log(reachableTargets);
-    return reachableTargets[0];
+
+    return reachableTargets.length !== 0
+      ? reachableTargets[0]
+      : justOutOfReachTargets[0];
   }
   private getFlyingTarget(units: Card[], source: Card) {
     this.getMeleeTarget(units, source);
