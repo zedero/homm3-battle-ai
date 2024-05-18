@@ -313,8 +313,6 @@ export class BattleBoardComponent implements OnInit {
 
     const moveEnemyCard = (card: Card, pos: Point) => {
       removeCardFromQueue(card);
-      // const x = Math.floor(Math.random() * 4);
-      // const y = Math.floor(Math.random() * 4);
       this.moveLine = {
         source: { x: card.position.x, y: card.position.y },
         target: pos,
