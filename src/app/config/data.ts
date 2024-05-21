@@ -14,6 +14,13 @@ export enum TIER {
   'AZURE',
 }
 
+export const TierName = {
+  Bronze: [TIER.BRONZE],
+  Silver: [TIER.SILVER],
+  Gold: [TIER.GOLD],
+  Azure: [TIER.AZURE],
+};
+
 export enum TYPE {
   MELEE,
   RANGED,

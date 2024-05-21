@@ -28,10 +28,13 @@ export class AiService {
     } else {
       const target: Target = this.getMeleeTarget(units, source);
 
-      if (target.path.length > 5 || target.path.length === 0) {
-        console.log('target', target.path.length, target);
+      if (
+        !target?.path ||
+        target?.path.length > 5 ||
+        target?.path.length === 0
+      ) {
         attackTarget = undefined;
-        if (target.path.length > 0) {
+        if (target?.path && target?.path.length > 0) {
           moveTo = this.toPoint(target?.path[3]);
         }
       } else {

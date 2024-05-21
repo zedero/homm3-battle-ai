@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
-import { Card, TIER, TYPE, Unit, UNITS } from '../../config/data';
+import { Card, TIER, TierName, TYPE, Unit, UNITS } from '../../config/data';
 import { Point } from '../line/line.component';
 import { MoveCard } from '../card/card.component';
 import { StateService } from '../../services/state.service';
@@ -56,6 +56,8 @@ export class BattleBoardComponent implements OnInit {
 
   rows = [0, 1, 2, 3, 4];
   cells = [0, 1, 2, 3];
+
+  enemyUnplacedCards: Card[] = [];
 
   placedCards: Card[] = [
     {
@@ -252,14 +254,43 @@ export class BattleBoardComponent implements OnInit {
     );
   }
 
+  public moveCardOnBoard(newCard: MoveCard, isEnemy = false) {
+    newCard.card.position.x = newCard.position.x;
+    newCard.card.position.y = newCard.position.y;
+
+    const occupiedByCard = this.placedCards.find(
+      (card) =>
+        card.position.x === newCard.position.x &&
+        card.position.y === newCard.position.y,
+    );
+    if (!newCard || occupiedByCard) {
+      return;
+    }
+
+    this.placedCards.push(newCard.card);
+    if (isEnemy) {
+      this.enemyUnplacedCards = this.enemyUnplacedCards.filter(
+        (card) => card.name !== newCard.card.name,
+      );
+    }
+  }
+
   public moveCard(movedCard: MoveCard) {
     // console.log('! MOVE', movedCard.card.name, movedCard.position.row, movedCard.position.cell)
     const card = this.placedCards.find(
       (card) => card.name === movedCard.card.name,
     );
-    if (!card) {
+
+    const occupiedByCard = this.placedCards.find(
+      (card) =>
+        card.position.x === movedCard.position.x &&
+        card.position.y === movedCard.position.y,
+    );
+
+    if (!card || occupiedByCard) {
       return;
     }
+
     card.position.x = movedCard.position.x;
     card.position.y = movedCard.position.y;
   }
@@ -294,7 +325,9 @@ export class BattleBoardComponent implements OnInit {
 
   getNextHighestInitiative(cards: Card[]) {
     const initiatives = new Set(cards.map((card: Card) => card.initiative));
-    return Array.from(initiatives).sort().reverse()[0];
+    return Array.from(initiatives)
+      .sort((a, b) => a - b)
+      .reverse()[0];
   }
 
   removeCardFromQueue = (cardToRemove: Card) => {
@@ -305,7 +338,6 @@ export class BattleBoardComponent implements OnInit {
   };
 
   nextMove() {
-    console.log(this.turnState);
     this.highlightedUnits$.next([]);
 
     this.moveLine = {
@@ -374,6 +406,7 @@ export class BattleBoardComponent implements OnInit {
         return card.isEnemy;
       }).length
     ) {
+      this.state.transition('ENEMY.TURN');
       const card = possibleCards.filter((card: Card) => {
         return card.isEnemy;
       })[0];
@@ -386,8 +419,11 @@ export class BattleBoardComponent implements OnInit {
         };
       } else if (data.moveTo) {
         moveEnemyCard(card, data.moveTo);
+      } else {
+        removeCardFromQueue(card);
+        console.log('UNIT COULD NOT MOVE OR ATTACK:', card.name);
+        this.state.transition('ENEMY.END');
       }
-      this.state.transition('ENEMY.TURN');
     } else {
       this.state.transition('PLAYER.TURN');
       const possibleUnits = possibleCards.filter((card: Card) => {
@@ -425,4 +461,45 @@ export class BattleBoardComponent implements OnInit {
       (card: Card) => card.name !== cardToRemove.name,
     );
   };
+
+  removeEnemyUnplacedCard = (cardToRemove: Card) => {
+    this.enemyUnplacedCards = this.enemyUnplacedCards.filter(
+      (card: Card) => card.name !== cardToRemove.name,
+    );
+  };
+
+  getTier = (tier: string) => {
+    // @ts-ignore
+    return TierName[tier][0];
+  };
+
+  getUnitType = (tier: string) => {
+    // @ts-ignore
+    return TYPE[tier];
+  };
+
+  addEnemyUnplacedCard(option: any) {
+    const id = this.fromName(option.option.value);
+    const card = UNITS.find((unit) => unit.id === id);
+
+    if (!card) {
+      return;
+    }
+    // clear autocomplete input
+    this.unitAControl.setValue('');
+
+    // console.log(this.unitAControl);
+    this.enemyUnplacedCards.push({
+      tier: this.getTier(card.tier),
+      initiative: card.initiative,
+      name: option.option.value,
+      type: card.ranged ? TYPE.RANGED : TYPE.MELEE,
+      canTeleport: false,
+      isEnemy: true,
+      position: {
+        x: -1,
+        y: -1,
+      },
+    });
+  }
 }

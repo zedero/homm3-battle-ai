@@ -29,7 +29,7 @@
 </div>
 </ng-container>
 <!-- Attack Line -->
-
+<ng-container *ngIf="length > offset">
 <span class="line attack"
       *ngIf="length && isAttack"
       [style.top.px]="top"
@@ -52,3 +52,4 @@
   class="material-symbols-outlined attack">swords
   </span>
 </span>
+</ng-container>

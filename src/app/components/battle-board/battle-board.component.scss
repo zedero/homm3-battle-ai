@@ -1,5 +1,6 @@
 .battle-map {
   display: block;
+  position: relative;
 
   &_row {
     display: flex;
@@ -31,5 +32,16 @@
     z-index: 1;
     pointer-events: all;
     position: absolute;
+  }
+}
+
+
+.unitList {
+  display: flex;
+  padding: 0;
+
+  &_item {
+    margin: 0;
+    list-style-type: none;
   }
 }

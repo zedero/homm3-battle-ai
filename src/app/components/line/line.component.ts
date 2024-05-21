@@ -26,7 +26,7 @@ export class LineComponent implements OnChanges {
   public length = 0;
   public orientation = 0;
 
-  private offset = 0;
+  public offset = 0;
   private width = 120;
   private height = 100;
 

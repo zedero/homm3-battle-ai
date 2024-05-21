@@ -22,7 +22,7 @@ export type MoveCard = {
   styleUrls: ['./card.component.scss'],
 })
 export class CardComponent implements OnChanges {
-  @Input() public card!: Card | undefined;
+  @Input({ required: true }) public card!: Card | undefined;
   @Input() public highlighted!: string[];
   @Input() public selectedCard: Card | undefined;
   @Input() public state!: string;
@@ -59,9 +59,8 @@ export class CardComponent implements OnChanges {
     );
 
     const target = collisionElements.find((element: Element) => {
-      return element.className === 'battle-map_cell';
+      return element.className.includes('battle-map_cell');
     });
-
     if (!target?.id) {
       return;
     }
