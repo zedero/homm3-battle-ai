@@ -72,6 +72,7 @@ export class CardComponent implements OnChanges {
       card: this._card,
       position: { x: pos[0], y: pos[1] },
     });
+    event.source._dragRef.setFreeDragPosition({ x: 0, y: 0 });
   }
 
   delete() {
