@@ -13,6 +13,7 @@ export type Line = {
 };
 
 export type GameState = {
+  lastInitiative: number;
   isPlayerTurn: boolean;
   cardQueue: Card[];
 };
@@ -29,6 +30,7 @@ export class BattleBoardComponent implements OnInit {
   >([]);
   public state: StateService;
   public aiService: AiService;
+  public selectedPlayerCard: Card | undefined = undefined;
 
   constructor(state: StateService, aiService: AiService) {
     this.state$ = state.state;
@@ -47,6 +49,7 @@ export class BattleBoardComponent implements OnInit {
   };
 
   turnState: GameState = {
+    lastInitiative: -1,
     isPlayerTurn: true,
     cardQueue: [],
   };
@@ -57,7 +60,7 @@ export class BattleBoardComponent implements OnInit {
   placedCards: Card[] = [
     {
       tier: TIER.BRONZE,
-      initiative: 6,
+      initiative: 4,
       name: 'Skeletons',
       type: TYPE.MELEE,
       canTeleport: false,
@@ -81,7 +84,7 @@ export class BattleBoardComponent implements OnInit {
     },
     {
       tier: TIER.BRONZE,
-      initiative: 3,
+      initiative: 4,
       name: 'Zombies',
       type: TYPE.MELEE,
       canTeleport: false,
@@ -93,7 +96,7 @@ export class BattleBoardComponent implements OnInit {
     },
     {
       tier: TIER.BRONZE,
-      initiative: 5,
+      initiative: 4,
       name: 'Wraiths',
       type: TYPE.MELEE,
       canTeleport: false,
@@ -208,6 +211,9 @@ export class BattleBoardComponent implements OnInit {
       if (state === 'NEXT.UNIT') {
         this.nextMove();
       }
+      if (state === 'ENEMY.END') {
+        this.nextMove();
+      }
     });
   }
 
@@ -258,15 +264,28 @@ export class BattleBoardComponent implements OnInit {
     card.position.y = movedCard.position.y;
   }
 
-  public useCard(useCard: Card) {
+  public useCard(useCard: Card | undefined) {
+    if (!useCard) {
+      return;
+    }
     this.removeCardFromQueue(useCard);
+    this.selectedPlayerCard = undefined;
     this.state.transition('PLAYER.END');
+  }
+  public selectCard(selectCard: Card | undefined) {
+    this.selectedPlayerCard = selectCard;
+    this.state.transition('PLAYER.SELECTED');
+  }
+
+  public endEnemyTurn() {
+    this.state.transition('ENEMY.END');
   }
 
   startBattle() {
     const battleCards = JSON.parse(JSON.stringify(this.placedCards));
     this.shuffleArray(battleCards);
     this.turnState = {
+      lastInitiative: -1,
       isPlayerTurn: true,
       cardQueue: battleCards,
     };
@@ -286,6 +305,7 @@ export class BattleBoardComponent implements OnInit {
   };
 
   nextMove() {
+    console.log(this.turnState);
     this.highlightedUnits$.next([]);
 
     this.moveLine = {
@@ -304,8 +324,14 @@ export class BattleBoardComponent implements OnInit {
     const currentInitiative = this.getNextHighestInitiative(
       this.turnState.cardQueue,
     );
+
+    if (currentInitiative !== this.turnState.lastInitiative) {
+      this.turnState.isPlayerTurn = true;
+    }
+    this.turnState.lastInitiative = currentInitiative;
+
     const removeCardFromQueue = (cardToRemove: Card) => {
-      console.log('@@', cardToRemove.name);
+      // console.log('@@', cardToRemove.name);
       this.turnState.cardQueue = this.turnState.cardQueue.filter(
         (card: Card) => card.name !== cardToRemove.name,
       );
@@ -371,7 +397,7 @@ export class BattleBoardComponent implements OnInit {
         possibleUnits ? possibleUnits.map((unit) => unit.name) : [],
       );
     }
-
+    console.log('##', this.state$.value);
     this.turnState.isPlayerTurn = !this.turnState.isPlayerTurn;
 
     // this.turnState

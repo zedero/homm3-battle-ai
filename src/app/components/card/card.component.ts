@@ -24,10 +24,12 @@ export type MoveCard = {
 export class CardComponent implements OnChanges {
   @Input() public card!: Card | undefined;
   @Input() public highlighted!: string[];
+  @Input() public selectedCard: Card | undefined;
   @Input() public state!: string;
   @Output() public move = new EventEmitter<MoveCard>();
   @Output() public deleteCard = new EventEmitter<Card>();
   @Output() public useCard = new EventEmitter<Card>();
+  @Output() public selectCard = new EventEmitter<Card>();
   protected _card!: Card;
 
   isHighlighted = false;
@@ -77,6 +79,10 @@ export class CardComponent implements OnChanges {
 
   delete() {
     this.deleteCard.emit(this._card);
+  }
+
+  select() {
+    this.selectCard.emit(this._card);
   }
 
   use() {

@@ -23,10 +23,12 @@
       <ng-container *ngIf="isCardPresent(x, y)">
         <app-card
           [card]="getCard(x, y)"
+          [selectedCard]="selectedPlayerCard"
           [highlighted]="highlightedUnits$ | async | defaultIfNull: []"
           [state]="state$ | async | defaultIfNull: 'IDLE'"
           (move)="moveCard($event)"
           (useCard)="useCard($event)"
+          (selectCard)="selectCard($event)"
           (deleteCard)="removeCardFromGame($event)"
         ></app-card>
       </ng-container>
@@ -48,8 +50,15 @@
   (click)="state.transition('START')"
 >START</button>
 <button
-  *ngIf="state$.value !== 'IDLE' && state$.value !== 'PLAYER.TURN'"
-  (click)="nextMove()"
->NEXT</button>
+  *ngIf="state$.value === 'ENEMY.TURN'"
+  (click)="endEnemyTurn()"
+>Finish enemy turn</button>
+<button
+  *ngIf="state$.value === 'PLAYER.SELECTED'"
+  (click)="useCard(selectedPlayerCard)"
+>Finish player turn</button>
+<div
+*ngIf="state$.value === 'PLAYER.TURN'"
+>Select an unit</div>
 
 <!--{{highlightedUnits$ | async | json}}-->

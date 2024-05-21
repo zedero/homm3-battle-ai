@@ -35,10 +35,15 @@
 <!--      fontIcon="check_circle">-->
 <!--    </mat-icon>-->
     <span
-      *ngIf="isHighlighted"
-      (click)="use()"
+      *ngIf="isHighlighted && !selectedCard"
+      (click)="select()"
       class="material-symbols-outlined">
       check_box_outline_blank
+    </span>
+    <span
+      *ngIf="isHighlighted && selectedCard?.name === _card.name"
+      class="material-symbols-outlined">
+      check_box
     </span>
     <mat-icon
       *ngIf="state !== 'IDLE'"
