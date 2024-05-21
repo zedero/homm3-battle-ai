@@ -27,13 +27,19 @@
 <!--    Del-->
 <!--  </button>-->
   <div class="card_toolbar">
-    <mat-icon
+<!--    <mat-icon-->
+<!--      *ngIf="isHighlighted"-->
+<!--      (click)="use()"-->
+<!--      aria-hidden="false"-->
+<!--      aria-label="Use card"-->
+<!--      fontIcon="check_circle">-->
+<!--    </mat-icon>-->
+    <span
       *ngIf="isHighlighted"
       (click)="use()"
-      aria-hidden="false"
-      aria-label="Use card"
-      fontIcon="check_circle">
-    </mat-icon>
+      class="material-symbols-outlined">
+      check_box_outline_blank
+    </span>
     <mat-icon
       *ngIf="state !== 'IDLE'"
       (click)="delete()"

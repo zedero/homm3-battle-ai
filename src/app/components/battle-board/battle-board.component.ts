@@ -196,7 +196,7 @@ export class BattleBoardComponent implements OnInit {
         this.highlightedUnits$.next([]);
       }
       if (state === 'PLAYER.END') {
-        this.state.transition('NEXT_UNIT');
+        this.state.transition('NEXT.UNIT');
       }
       if (state === 'ROUND_END') {
         console.log('@@ END OF THE ROUND, ASK FOR AN OTHER ROUND');
@@ -205,7 +205,7 @@ export class BattleBoardComponent implements OnInit {
       if (state === 'START') {
         this.startBattle();
       }
-      if (state === 'NEXT_UNIT') {
+      if (state === 'NEXT.UNIT') {
         this.nextMove();
       }
     });
@@ -270,7 +270,7 @@ export class BattleBoardComponent implements OnInit {
       isPlayerTurn: true,
       cardQueue: battleCards,
     };
-    this.state.transition('NEXT_UNIT');
+    this.state.transition('NEXT.UNIT');
   }
 
   getNextHighestInitiative(cards: Card[]) {
@@ -361,8 +361,6 @@ export class BattleBoardComponent implements OnInit {
       } else if (data.moveTo) {
         moveEnemyCard(card, data.moveTo);
       }
-      console.log('@', this.attackLine, this.moveLine, data);
-
       this.state.transition('ENEMY.TURN');
     } else {
       this.state.transition('PLAYER.TURN');
@@ -393,7 +391,7 @@ export class BattleBoardComponent implements OnInit {
   }
 
   removeCardFromGame = (cardToRemove: Card) => {
-    console.log('@@', cardToRemove.name);
+    // console.log('@@', cardToRemove.name);
     this.turnState.cardQueue = this.turnState.cardQueue.filter(
       (card: Card) => card.name !== cardToRemove.name,
     );

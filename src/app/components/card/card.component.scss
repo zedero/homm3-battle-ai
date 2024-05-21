@@ -5,6 +5,8 @@
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   height: 110px;
   width: 90px;
   margin: 4px;
@@ -35,7 +37,17 @@
   }
 
   &_toolbar {
+    margin-top: auto;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
+
+    span {
+      cursor: pointer;
+    }
+
+    .mat-icon:only-child {
+      margin-left: auto;
+    }
   }
 }
