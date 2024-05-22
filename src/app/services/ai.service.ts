@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Card, TYPE } from '../config/data';
 import * as pathfinding from 'pathfinding';
+import { Point } from '../components/line/line.component';
 
 export type Target = {
   target: Card;
@@ -22,6 +23,9 @@ export class AiService {
     let attackTarget: Card | undefined;
     let moveTo: { x: number; y: number } | undefined;
 
+    if (source.canTeleport) {
+      this.getTeleportTarget(units, source);
+    }
     if (source.type === TYPE.RANGED) {
       attackTarget = this.getRangedTarget(units, source);
       moveTo = source.position;
@@ -67,6 +71,41 @@ export class AiService {
       (target) => target.tier < source.tier,
     );
     return [...sameTier, ...lowerTier, ...higherTier];
+  }
+
+  getDistance(a: Point, b: Point) {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  }
+
+  private getTeleportTarget(units: Card[], source: Card) {
+    const getTeleportLocation = (target: Card) => {
+      const grid = this.getGrid(units);
+      console.log(grid);
+      console.log(this.getDistance(source.position, target.position));
+      // check if target is next to source
+
+      const a =
+        !!grid.nodes?.[target.position.y - 1]?.[target.position.x]?.walkable;
+      const b =
+        !!grid.nodes?.[target.position.y]?.[target.position.x - 1]?.walkable;
+      const c =
+        !!grid.nodes?.[target.position.y + 1]?.[target.position.x]?.walkable;
+      const d =
+        !!grid.nodes?.[target.position.y]?.[target.position.x + 1]?.walkable;
+
+      console.log(
+        target.position,
+        // [a, b, c, d],
+        [a, b, c, d].some((a) => a),
+      );
+    };
+    const targets = units.filter((unit) => {
+      return unit.isEnemy !== source.isEnemy;
+    });
+    const prioritizeTargets = this.prioritizeTargets(targets, source);
+    prioritizeTargets.forEach((target) => {
+      getTeleportLocation(target);
+    });
   }
 
   private getRangedTarget(units: Card[], source: Card) {

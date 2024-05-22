@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
 import { Card, TIER, TierName, TYPE, Unit, UNITS } from '../../config/data';
@@ -6,6 +6,7 @@ import { Point } from '../line/line.component';
 import { MoveCard } from '../card/card.component';
 import { StateService } from '../../services/state.service';
 import { AiService } from 'src/app/services/ai.service';
+import { SPECIALS } from '../../config/specials';
 
 export type Line = {
   source: Point;
@@ -31,6 +32,8 @@ export class BattleBoardComponent implements OnInit {
   public state: StateService;
   public aiService: AiService;
   public selectedPlayerCard: Card | undefined = undefined;
+
+  test = signal(0);
 
   constructor(state: StateService, aiService: AiService) {
     this.state$ = state.state;
@@ -338,6 +341,7 @@ export class BattleBoardComponent implements OnInit {
   };
 
   nextMove() {
+    // reset lines and highlighted units
     this.highlightedUnits$.next([]);
 
     this.moveLine = {
@@ -348,6 +352,8 @@ export class BattleBoardComponent implements OnInit {
       source: { x: -1, y: -1 },
       target: { x: -1, y: -1 },
     };
+
+    // check if the queue is empty
     if (this.turnState.cardQueue.length === 0) {
       this.state.transition('ROUND_END');
       return;
@@ -363,7 +369,6 @@ export class BattleBoardComponent implements OnInit {
     this.turnState.lastInitiative = currentInitiative;
 
     const removeCardFromQueue = (cardToRemove: Card) => {
-      // console.log('@@', cardToRemove.name);
       this.turnState.cardQueue = this.turnState.cardQueue.filter(
         (card: Card) => card.name !== cardToRemove.name,
       );
@@ -433,7 +438,7 @@ export class BattleBoardComponent implements OnInit {
         possibleUnits ? possibleUnits.map((unit) => unit.name) : [],
       );
     }
-    console.log('##', this.state$.value);
+    // console.log('##', this.state$.value);
     this.turnState.isPlayerTurn = !this.turnState.isPlayerTurn;
 
     // this.turnState
@@ -478,6 +483,10 @@ export class BattleBoardComponent implements OnInit {
     return TYPE[tier];
   };
 
+  private hasSkill(unit: Unit, skill: number) {
+    return unit.special.find((special) => special === skill) !== undefined;
+  }
+
   addEnemyUnplacedCard(option: any) {
     const id = this.fromName(option.option.value);
     const card = UNITS.find((unit) => unit.id === id);
@@ -489,12 +498,13 @@ export class BattleBoardComponent implements OnInit {
     this.unitAControl.setValue('');
 
     // console.log(this.unitAControl);
+
     this.enemyUnplacedCards.push({
       tier: this.getTier(card.tier),
       initiative: card.initiative,
       name: option.option.value,
       type: card.ranged ? TYPE.RANGED : TYPE.MELEE,
-      canTeleport: false,
+      canTeleport: this.hasSkill(card, SPECIALS.TELEPORT),
       isEnemy: true,
       position: {
         x: -1,
