@@ -1,9 +1,9 @@
 <ng-container *ngIf="state$.value === 'IDLE'">
   <mat-form-field class="example-full-width">
-    <mat-label>Unit A</mat-label>
+    <mat-label>Enemy Unit</mat-label>
     <input type="text"
            placeholder="Pick one"
-           aria-label="Unit A"
+           aria-label="Enemy Unit"
            matInput
            [formControl]="unitAControl"
            [matAutocomplete]="unitA">
@@ -68,8 +68,21 @@
   *ngIf="state$.value === 'PLAYER.SELECTED'"
   (click)="useCard(selectedPlayerCard)"
 >Finish player turn</button>
+<button
+  *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
+  (click)="newRound(true)"
+>Start new round</button>
+<button
+  *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
+  (click)="newRound(false)"
+>Stop battle</button>
 <div
 *ngIf="state$.value === 'PLAYER.TURN'"
 >Select an unit</div>
+
+<button
+  *ngIf="state$.value !== 'ROUND.REQUEST.NEW'"
+  (click)="newRound(false)"
+>Quit battle</button>
 
 <!--{{highlightedUnits$ | async | json}}-->

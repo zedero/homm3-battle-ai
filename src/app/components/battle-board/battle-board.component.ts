@@ -206,9 +206,8 @@ export class BattleBoardComponent implements OnInit {
       if (state === 'PLAYER.END') {
         this.state.transition('NEXT.UNIT');
       }
-      if (state === 'ROUND_END') {
-        console.log('@@ END OF THE ROUND, ASK FOR AN OTHER ROUND');
-        this.state.transition('IDLE');
+      if (state === 'ROUND.END') {
+        this.state.transition('ROUND.REQUEST.NEW');
       }
       if (state === 'START') {
         this.startBattle();
@@ -298,6 +297,14 @@ export class BattleBoardComponent implements OnInit {
     card.position.y = movedCard.position.y;
   }
 
+  public newRound(newRound: boolean) {
+    if (newRound) {
+      this.state.transition('START');
+    } else {
+      this.state.transition('IDLE');
+    }
+  }
+
   public useCard(useCard: Card | undefined) {
     if (!useCard) {
       return;
@@ -355,7 +362,7 @@ export class BattleBoardComponent implements OnInit {
 
     // check if the queue is empty
     if (this.turnState.cardQueue.length === 0) {
-      this.state.transition('ROUND_END');
+      this.state.transition('ROUND.END');
       return;
     }
 
