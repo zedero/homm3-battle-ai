@@ -61,6 +61,7 @@ export class BattleBoardComponent implements OnInit {
   cells = [0, 1, 2, 3];
 
   enemyUnplacedCards: Card[] = [];
+  playerUnplacedCards: Card[] = [];
 
   placedCards: Card[] = [
     {
@@ -256,7 +257,7 @@ export class BattleBoardComponent implements OnInit {
     );
   }
 
-  public moveCardOnBoard(newCard: MoveCard, isEnemy = false) {
+  public moveCardOnBoard(newCard: MoveCard) {
     newCard.card.position.x = newCard.position.x;
     newCard.card.position.y = newCard.position.y;
 
@@ -270,10 +271,10 @@ export class BattleBoardComponent implements OnInit {
     }
 
     this.placedCards.push(newCard.card);
-    if (isEnemy) {
-      this.enemyUnplacedCards = this.enemyUnplacedCards.filter(
-        (card) => card.name !== newCard.card.name,
-      );
+    if (newCard.card.isEnemy) {
+      this.removeEnemyUnplacedCard(newCard.card);
+    } else {
+      this.removePlayerUnplacedCard(newCard.card);
     }
   }
 
@@ -480,6 +481,12 @@ export class BattleBoardComponent implements OnInit {
     );
   };
 
+  removePlayerUnplacedCard = (cardToRemove: Card) => {
+    this.playerUnplacedCards = this.playerUnplacedCards.filter(
+      (card: Card) => card.name !== cardToRemove.name,
+    );
+  };
+
   getTier = (tier: string) => {
     // @ts-ignore
     return TierName[tier][0];
@@ -513,6 +520,32 @@ export class BattleBoardComponent implements OnInit {
       type: card.ranged ? TYPE.RANGED : TYPE.MELEE,
       canTeleport: this.hasSkill(card, SPECIALS.TELEPORT),
       isEnemy: true,
+      position: {
+        x: -1,
+        y: -1,
+      },
+    });
+  }
+
+  addPlayerUnplacedCard(option: any) {
+    const id = this.fromName(option.option.value);
+    const card = UNITS.find((unit) => unit.id === id);
+
+    if (!card) {
+      return;
+    }
+    // clear autocomplete input
+    this.unitBControl.setValue('');
+
+    // console.log(this.unitAControl);
+
+    this.playerUnplacedCards.push({
+      tier: this.getTier(card.tier),
+      initiative: card.initiative,
+      name: option.option.value,
+      type: card.ranged ? TYPE.RANGED : TYPE.MELEE,
+      canTeleport: this.hasSkill(card, SPECIALS.TELEPORT),
+      isEnemy: false,
       position: {
         x: -1,
         y: -1,

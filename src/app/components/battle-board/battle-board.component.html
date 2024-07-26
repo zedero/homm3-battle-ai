@@ -1,60 +1,95 @@
-<ng-container *ngIf="state$.value === 'IDLE'">
-  <mat-form-field class="example-full-width">
-    <mat-label>Enemy Unit</mat-label>
-    <input type="text"
-           placeholder="Pick one"
-           aria-label="Enemy Unit"
-           matInput
-           [formControl]="unitAControl"
-           [matAutocomplete]="unitA">
-    <mat-autocomplete #unitA="matAutocomplete" (optionSelected)="addEnemyUnplacedCard($event)">
-      <mat-option *ngFor="let option of filteredUnitAOptions | async" [value]="name(option.id)">
-        {{name(option.id)}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-  <ul class="unitList">
-    <li class="unitList_item" *ngFor="let card of enemyUnplacedCards">
-      <app-card
-        [card]="card"
-        (move)="moveCardOnBoard($event, true)"
-        (deleteCard)="removeEnemyUnplacedCard($event)"
-      ></app-card>
-    </li>
-  </ul>
-</ng-container>
-
-
-<div class="battle-map">
-  <div class="battle-map_row" *ngFor="let y of rows">
-    <div class="battle-map_cell" *ngFor="let x of cells" id="{{x}}.{{y}}">
+<div class="interface">
+  <div class="interface-battle-area">
+    <div class="battle-map">
+      <div class="battle-map_row" *ngFor="let y of rows">
+        <div class="battle-map_cell" *ngFor="let x of cells" id="{{x}}.{{y}}">
       <span class="pos">
         {{x}} . {{y}}
       </span>
-      <ng-container *ngIf="isCardPresent(x, y)">
-        <app-card
-          [card]="getCard(x, y)"
-          [selectedCard]="selectedPlayerCard"
-          [highlighted]="highlightedUnits$ | async | defaultIfNull: []"
-          [state]="state$ | async | defaultIfNull: 'IDLE'"
-          (move)="moveCard($event)"
-          (useCard)="useCard($event)"
-          (selectCard)="selectCard($event)"
-          (deleteCard)="removeCardFromGame($event)"
-        ></app-card>
-      </ng-container>
+          <ng-container *ngIf="isCardPresent(x, y)">
+            <app-card
+              [card]="getCard(x, y)"
+              [selectedCard]="selectedPlayerCard"
+              [highlighted]="highlightedUnits$ | async | defaultIfNull: []"
+              [state]="state$ | async | defaultIfNull: 'IDLE'"
+              (move)="moveCard($event)"
+              (useCard)="useCard($event)"
+              (selectCard)="selectCard($event)"
+              (deleteCard)="removeCardFromGame($event)"
+            ></app-card>
+          </ng-container>
+        </div>
+      </div>
+      <app-line
+        [source]="moveLine.source"
+        [target]="moveLine.target"
+      ></app-line>
+      <app-line
+        [source]="attackLine.source"
+        [target]="attackLine.target"
+        [isAttack]="true"
+      ></app-line>
     </div>
   </div>
-  <app-line
-    [source]="moveLine.source"
-    [target]="moveLine.target"
-  ></app-line>
-  <app-line
-    [source]="attackLine.source"
-    [target]="attackLine.target"
-    [isAttack]="true"
-  ></app-line>
+  <div class="interface-unit-placement">
+    <ng-container *ngIf="state$.value === 'IDLE'">
+      <div class="interface-unit-placement_enemy">
+        <mat-form-field class="example-full-width">
+          <mat-label>Enemy Unit</mat-label>
+          <input type="text"
+                 placeholder="Pick one"
+                 aria-label="Enemy Unit"
+                 matInput
+                 [formControl]="unitAControl"
+                 [matAutocomplete]="unitA">
+          <mat-autocomplete #unitA="matAutocomplete" (optionSelected)="addEnemyUnplacedCard($event)">
+            <mat-option *ngFor="let option of filteredUnitAOptions | async" [value]="name(option.id)">
+              {{name(option.id)}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <ul class="unitList">
+          <li class="unitList_item" *ngFor="let card of enemyUnplacedCards">
+            <app-card
+              [card]="card"
+              (move)="moveCardOnBoard($event)"
+              (deleteCard)="removeEnemyUnplacedCard($event)"
+            ></app-card>
+          </li>
+        </ul>
+        </div>
+      <div class="interface-unit-placement_player">
+        <mat-form-field class="example-full-width">
+          <mat-label>Player Unit</mat-label>
+          <input type="text"
+                 placeholder="Pick one"
+                 aria-label="Player Unit"
+                 matInput
+                 [formControl]="unitBControl"
+                 [matAutocomplete]="unitB">
+          <mat-autocomplete #unitB="matAutocomplete" (optionSelected)="addPlayerUnplacedCard($event)">
+            <mat-option *ngFor="let option of filteredUnitBOptions | async" [value]="name(option.id)">
+              {{name(option.id)}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <ul class="unitList">
+          <li class="unitList_item" *ngFor="let card of playerUnplacedCards">
+            <app-card
+              [card]="card"
+              (move)="moveCardOnBoard($event)"
+              (deleteCard)="removePlayerUnplacedCard($event)"
+            ></app-card>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+  </div>
 </div>
+
+
+
+
 
 <button
   *ngIf="state$.value === 'IDLE'"
@@ -85,4 +120,4 @@
   (click)="newRound(false)"
 >Quit battle</button>
 
-<!--{{highlightedUnits$ | async | json}}-->
+
