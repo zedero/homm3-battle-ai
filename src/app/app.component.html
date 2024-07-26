@@ -1,1 +1,17 @@
-<app-battle-board></app-battle-board>
+<ng-container *ngFor="let board of allBoard$ | async">
+  <button (click)="selectBoard(board.guid)">{{ board.alias }}</button>
+</ng-container>
+<button (click)="createBoard()">Create new board</button>
+<hr>
+
+<!--<ng-container *ngFor="let board of allBoard$ | async">-->
+<!--  -->
+<!--</ng-container>-->
+<app-battle-board
+  [boardData]="currentBoard$ | async | defaultIfNull: undefined"
+></app-battle-board>
+
+<!--<app-battle-board-->
+<!--  [boardData]="currentBoard$ | async | defaultIfNull: undefined"-->
+<!--&gt;</app-battle-board>-->
+

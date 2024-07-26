@@ -1,4 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  signal,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, map, Observable, startWith } from 'rxjs';
 import { Card, TIER, TierName, TYPE, Unit, UNITS } from '../../config/data';
@@ -7,6 +14,7 @@ import { MoveCard } from '../card/card.component';
 import { StateService } from '../../services/state.service';
 import { AiService } from 'src/app/services/ai.service';
 import { SPECIALS } from '../../config/specials';
+import { Board } from '../../state/boards/app.state';
 
 export type Line = {
   source: Point;
@@ -24,7 +32,7 @@ export type GameState = {
   templateUrl: './battle-board.component.html',
   styleUrls: ['./battle-board.component.scss'],
 })
-export class BattleBoardComponent implements OnInit {
+export class BattleBoardComponent implements OnInit, OnChanges {
   public state$: BehaviorSubject<string>;
   public highlightedUnits$: BehaviorSubject<string[]> = new BehaviorSubject<
     string[]
@@ -32,6 +40,8 @@ export class BattleBoardComponent implements OnInit {
   public state: StateService;
   public aiService: AiService;
   public selectedPlayerCard: Card | undefined = undefined;
+  @Input() public boardData: Board | undefined;
+  placedCards: Card[] = [];
 
   test = signal(0);
 
@@ -39,6 +49,13 @@ export class BattleBoardComponent implements OnInit {
     this.state$ = state.state;
     this.state = state;
     this.aiService = aiService;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['boardData']) {
+      this.placedCards = changes['boardData'].currentValue.placedCards;
+    }
+    // this.placedCards = changes.boardData.currentValue.pl
   }
 
   moveLine: Line = {
@@ -62,117 +79,6 @@ export class BattleBoardComponent implements OnInit {
 
   enemyUnplacedCards: Card[] = [];
   playerUnplacedCards: Card[] = [];
-
-  placedCards: Card[] = [
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Skeletons',
-      type: TYPE.MELEE,
-      canTeleport: false,
-      isEnemy: true,
-      position: {
-        x: 0,
-        y: 1,
-      },
-    },
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Halberdiers',
-      type: TYPE.MELEE,
-      canTeleport: false,
-      isEnemy: false,
-      position: {
-        x: 0,
-        y: 3,
-      },
-    },
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Zombies',
-      type: TYPE.MELEE,
-      canTeleport: false,
-      isEnemy: true,
-      position: {
-        x: 1,
-        y: 1,
-      },
-    },
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Wraiths',
-      type: TYPE.MELEE,
-      canTeleport: false,
-      isEnemy: true,
-      position: {
-        x: 2,
-        y: 1,
-      },
-    },
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Griffins',
-      type: TYPE.MELEE,
-      canTeleport: false,
-      isEnemy: false,
-      position: {
-        x: 1,
-        y: 3,
-      },
-    },
-    {
-      tier: TIER.BRONZE,
-      initiative: 4,
-      name: 'Marksmen',
-      type: TYPE.RANGED,
-      canTeleport: false,
-      isEnemy: false,
-      position: {
-        x: 0,
-        y: 4,
-      },
-    },
-    {
-      tier: TIER.SILVER,
-      initiative: 6,
-      name: 'Monks',
-      type: TYPE.RANGED,
-      canTeleport: false,
-      isEnemy: false,
-      position: {
-        x: 1,
-        y: 4,
-      },
-    },
-    {
-      tier: TIER.SILVER,
-      initiative: 5,
-      name: 'Liches',
-      type: TYPE.RANGED,
-      canTeleport: false,
-      isEnemy: true,
-      position: {
-        x: 0,
-        y: 0,
-      },
-    },
-    {
-      tier: TIER.GOLD,
-      initiative: 7,
-      name: 'Arch Angels',
-      type: TYPE.FLYING,
-      canTeleport: false,
-      isEnemy: false,
-      position: {
-        x: 2,
-        y: 3,
-      },
-    },
-  ];
 
   unitAControl = new FormControl('');
   // @ts-ignore
