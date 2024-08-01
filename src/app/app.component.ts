@@ -17,7 +17,9 @@ export class AppComponent implements OnInit {
     this.store.select(getCurrentBoard);
 
   allBoard$: Observable<Board[] | undefined> = this.store.select(getBoards);
-  ngOnInit() {}
+  ngOnInit() {
+    this.store.dispatch(boardActions.loadAppData());
+  }
 
   createBoard() {
     this.store.dispatch(boardActions.createNewBoard());
@@ -25,5 +27,18 @@ export class AppComponent implements OnInit {
 
   selectBoard(guid: string) {
     this.store.dispatch(boardActions.selectBoard({ guid }));
+  }
+
+  deleteBoard(event: any, guid: string) {
+    event.stopPropagation();
+    this.store.dispatch(boardActions.deleteBoard({ guid }));
+  }
+
+  renameBoard(event: any, guid: string) {
+    event.stopPropagation();
+    let text = prompt('Enter new name');
+    if (text) {
+      this.store.dispatch(boardActions.renameBoard({ guid, text }));
+    }
   }
 }

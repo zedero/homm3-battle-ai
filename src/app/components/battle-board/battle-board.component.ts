@@ -14,7 +14,10 @@ import { MoveCard } from '../card/card.component';
 import { StateService } from '../../services/state.service';
 import { AiService } from 'src/app/services/ai.service';
 import { SPECIALS } from '../../config/specials';
-import { Board } from '../../state/boards/app.state';
+import { ApplicationState, Board } from '../../state/boards/app.state';
+import { boardActions } from '../../state/boards/app.actions';
+import { Store } from '@ngrx/store';
+import { generateGuid } from '../../state/boards/app.reducer';
 
 export type Line = {
   source: Point;
@@ -42,10 +45,15 @@ export class BattleBoardComponent implements OnInit, OnChanges {
   public selectedPlayerCard: Card | undefined = undefined;
   @Input() public boardData: Board | undefined;
   placedCards: Card[] = [];
+  boardGuid: string = '';
 
   test = signal(0);
 
-  constructor(state: StateService, aiService: AiService) {
+  constructor(
+    state: StateService,
+    aiService: AiService,
+    private store: Store<ApplicationState>,
+  ) {
     this.state$ = state.state;
     this.state = state;
     this.aiService = aiService;
@@ -53,9 +61,12 @@ export class BattleBoardComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['boardData']) {
+      if (this.boardGuid !== changes['boardData'].currentValue.guid) {
+        this.state.transition('IDLE');
+      }
+      this.boardGuid = changes['boardData'].currentValue.guid;
       this.placedCards = changes['boardData'].currentValue.placedCards;
     }
-    // this.placedCards = changes.boardData.currentValue.pl
   }
 
   moveLine: Line = {
@@ -108,6 +119,15 @@ export class BattleBoardComponent implements OnInit, OnChanges {
 
     this.state$.subscribe((state) => {
       if (state === 'IDLE') {
+        this.moveLine = {
+          source: { x: -1, y: -1 },
+          target: { x: -1, y: -1 },
+        };
+
+        this.attackLine = {
+          source: { x: -1, y: -1 },
+          target: { x: -1, y: -1 },
+        };
         this.highlightedUnits$.next([]);
       }
       if (state === 'PLAYER.END') {
@@ -176,12 +196,25 @@ export class BattleBoardComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.placedCards.push(newCard.card);
+    // this.placedCards.push(newCard.card);
+    this.store.dispatch(
+      boardActions.addCard({
+        guid: this.boardData?.guid ? this.boardData.guid : '',
+        card: newCard.card,
+      }),
+    );
+
     if (newCard.card.isEnemy) {
       this.removeEnemyUnplacedCard(newCard.card);
     } else {
       this.removePlayerUnplacedCard(newCard.card);
     }
+
+    // this.store.dispatch(
+    //   boardActions.move({
+    //     guid: this.boardData?.guid ? this.boardData.guid : '',
+    //   }),
+    // );
   }
 
   public moveCard(movedCard: MoveCard) {
@@ -200,8 +233,17 @@ export class BattleBoardComponent implements OnInit, OnChanges {
       return;
     }
 
-    card.position.x = movedCard.position.x;
-    card.position.y = movedCard.position.y;
+    // card.position.x = movedCard.position.x;
+    // card.position.y = movedCard.position.y;
+
+    this.store.dispatch(
+      boardActions.moveCard({
+        cardGuid: card.guid,
+        guid: this.boardData?.guid ? this.boardData.guid : '',
+        x: movedCard.position.x,
+        y: movedCard.position.y,
+      }),
+    );
   }
 
   public newRound(newRound: boolean) {
@@ -379,6 +421,12 @@ export class BattleBoardComponent implements OnInit, OnChanges {
     this.placedCards = this.placedCards.filter(
       (card: Card) => card.name !== cardToRemove.name,
     );
+    this.store.dispatch(
+      boardActions.removeCard({
+        guid: this.boardData?.guid ? this.boardData.guid : '',
+        cardGuid: cardToRemove.guid,
+      }),
+    );
   };
 
   removeEnemyUnplacedCard = (cardToRemove: Card) => {
@@ -420,6 +468,7 @@ export class BattleBoardComponent implements OnInit, OnChanges {
     // console.log(this.unitAControl);
 
     this.enemyUnplacedCards.push({
+      guid: generateGuid(),
       tier: this.getTier(card.tier),
       initiative: card.initiative,
       name: option.option.value,
@@ -446,6 +495,7 @@ export class BattleBoardComponent implements OnInit, OnChanges {
     // console.log(this.unitAControl);
 
     this.playerUnplacedCards.push({
+      guid: generateGuid(),
       tier: this.getTier(card.tier),
       initiative: card.initiative,
       name: option.option.value,

@@ -28,6 +28,7 @@ export enum TYPE {
 }
 
 export type Card = {
+  guid: string;
   tier: TIER;
   initiative: number;
   name: string;

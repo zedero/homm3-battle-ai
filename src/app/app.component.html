@@ -1,17 +1,17 @@
-<ng-container *ngFor="let board of allBoard$ | async">
-  <button (click)="selectBoard(board.guid)">{{ board.alias }}</button>
-</ng-container>
-<button (click)="createBoard()">Create new board</button>
-<hr>
+<div class="background"></div>
+<div class="toolbar">
+  <ng-container *ngFor="let board of allBoard$ | async">
+    <button (click)="selectBoard(board.guid)">
+      {{ board.alias }}
+      <button (click)="renameBoard($event, board.guid)"><i class="fa-solid fa-pen"></i></button>
+      <button (click)="deleteBoard($event, board.guid)"><i class="fa-regular fa-trash-can"></i></button>
+    </button>
+  </ng-container>
+  <button (click)="createBoard()">Create new board</button>
+</div>
 
-<!--<ng-container *ngFor="let board of allBoard$ | async">-->
-<!--  -->
-<!--</ng-container>-->
 <app-battle-board
+  *ngIf="currentBoard$ | async as currentBoard"
   [boardData]="currentBoard$ | async | defaultIfNull: undefined"
 ></app-battle-board>
-
-<!--<app-battle-board-->
-<!--  [boardData]="currentBoard$ | async | defaultIfNull: undefined"-->
-<!--&gt;</app-battle-board>-->
 

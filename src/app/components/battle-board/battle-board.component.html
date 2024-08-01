@@ -90,34 +90,43 @@
 
 
 
+<div class="battle-guide">
+  <div
+    *ngIf="state$.value === 'PLAYER.TURN'"
+  >Select an unit</div>
+</div>
 
-<button
-  *ngIf="state$.value === 'IDLE'"
-  (click)="state.transition('START')"
->START</button>
-<button
-  *ngIf="state$.value === 'ENEMY.TURN'"
-  (click)="endEnemyTurn()"
->Finish enemy turn</button>
-<button
-  *ngIf="state$.value === 'PLAYER.SELECTED'"
-  (click)="useCard(selectedPlayerCard)"
->Finish player turn</button>
-<button
-  *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
-  (click)="newRound(true)"
->Start new round</button>
-<button
-  *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
-  (click)="newRound(false)"
->Stop battle</button>
-<div
-*ngIf="state$.value === 'PLAYER.TURN'"
->Select an unit</div>
+<div class="button-group">
+  <button
+    *ngIf="state$.value === 'IDLE'"
+    (click)="state.transition('START')"
+  >START</button>
+  <button
+    *ngIf="state$.value === 'ENEMY.TURN'"
+    (click)="endEnemyTurn()"
+  >Finish enemy turn</button>
+  <button
+    *ngIf="state$.value === 'PLAYER.SELECTED'"
+    (click)="useCard(selectedPlayerCard)"
+  >Finish player turn</button>
+  <button
+    *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
+    (click)="newRound(true)"
+  >Start new round</button>
+  <button
+    *ngIf="state$.value === 'ROUND.REQUEST.NEW'"
+    (click)="newRound(false)"
+  >Stop battle</button>
 
-<button
-  *ngIf="state$.value !== 'ROUND.REQUEST.NEW'"
-  (click)="newRound(false)"
->Quit battle</button>
+  <button
+    *ngIf="
+  state$.value !== 'ROUND.REQUEST.NEW'
+  && state$.value !== 'IDLE'
+"
+    (click)="newRound(false)"
+  >Quit battle</button>
+</div>
+
+
 
 

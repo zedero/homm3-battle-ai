@@ -2,8 +2,9 @@
   box-sizing: inherit;
 }
 
+
 html, body { height: 100%; box-sizing: border-box; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background: black; }
 
 mat-option {
   color: black;
@@ -12,23 +13,44 @@ mat-option {
 $primary: rgb(250,236,175);
 
 
+//button {
+//  background-color: white;
+//  border: 2px solid #777777;
+//  border-radius: 20px;
+//  margin-right: 10px;
+//  font-family: Roboto, serif;
+//  padding: 5px 10px;
+//  cursor: pointer;
+//  transition: background-color 0.3s;
+//
+//  &.warn {
+//    border-color: red;
+//    color: red;
+//  }
+//
+//  &:hover {
+//    background-color: #eee;
+//  }
+//}
+
 button {
-  background-color: white;
-  border: 2px solid #777777;
-  border-radius: 20px;
-  margin-right: 10px;
-  font-family: Roboto, serif;
-  padding: 5px 10px;
+  background-color: #fff;
+  margin-left: 10px;
+  font-family: Times New Roman;
+  font-size: 16px;
+  padding: 7px 10px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color .3s, border-top-color .2s, border-bottom-color .2s, border-left-color .2s, border-right-color .2s;
+  background-image: url(./assets/UI/dialog-background.png);
+  background-repeat: repeat;
+  border-radius: 0;
+  color: #ffe98c;
+  border: 2px solid #0c0800;
+  border-top-color: #a7a29a;
+  border-left-color: #584738;
 
-  &.warn {
-    border-color: red;
-    color: red;
-  }
-
-  &:hover {
-    background-color: #eee;
+  & button {
+    margin: -9px -12px -9px 6px;
   }
 }
 
@@ -64,4 +86,20 @@ button {
     'wght' 400,
     'GRAD' 0,
     'opsz' 24
+}
+
+.background {
+  background: url("assets/UI/void.png");
+  //background: url("assets/UI/background.jpg");
+  background-position: center center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: .9;
+  z-index: -1;
+
+  //filter: blur(3px);
+  //-webkit-filter: blur(8px);
 }

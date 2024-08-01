@@ -29,8 +29,11 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
 import { DefaultIfNullPipe } from './services/defaultIfNull';
 import { StoreModule } from '@ngrx/store';
 import { appReducer } from './state/boards/app.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './state/boards/app.effects';
 
 @NgModule({
+  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
     BattleBoardComponent,
@@ -39,6 +42,7 @@ import { appReducer } from './state/boards/app.reducer';
   ],
   imports: [
     StoreModule.forRoot({ appState: appReducer }),
+    EffectsModule.forRoot(AppEffects),
     BrowserModule,
     AppRoutingModule,
     MatSelectModule,
@@ -66,6 +70,5 @@ import { appReducer } from './state/boards/app.reducer';
     DefaultIfNullPipe,
   ],
   providers: [],
-  bootstrap: [AppComponent],
 })
 export class AppModule {}

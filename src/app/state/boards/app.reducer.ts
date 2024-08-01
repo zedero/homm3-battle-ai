@@ -3,6 +3,19 @@ import { ApplicationState } from './app.state';
 import { TIER, TYPE } from '../../config/data';
 import { boardActions } from './app.actions';
 
+export const generateGuid = () => {
+  let result, i, j;
+  result = '';
+  for (j = 0; j < 32; j++) {
+    if (j == 8 || j == 12 || j == 16 || j == 20) result = result + '-';
+    i = Math.floor(Math.random() * 16)
+      .toString(16)
+      .toUpperCase();
+    result = result + i;
+  }
+  return result;
+};
+
 export const initialState: ApplicationState = {
   boards: [
     {
@@ -10,6 +23,7 @@ export const initialState: ApplicationState = {
       alias: 'TestAlias',
       placedCards: [
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Skeletons',
@@ -22,6 +36,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Halberdiers',
@@ -34,6 +49,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Zombies',
@@ -46,6 +62,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Wraiths',
@@ -58,6 +75,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Griffins',
@@ -70,6 +88,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.BRONZE,
           initiative: 4,
           name: 'Marksmen',
@@ -82,6 +101,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.SILVER,
           initiative: 6,
           name: 'Monks',
@@ -94,6 +114,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.SILVER,
           initiative: 5,
           name: 'Liches',
@@ -106,6 +127,7 @@ export const initialState: ApplicationState = {
           },
         },
         {
+          guid: generateGuid(),
           tier: TIER.GOLD,
           initiative: 7,
           name: 'Arch Angels',
@@ -133,10 +155,31 @@ export const appReducer: ActionReducer<ApplicationState> = createReducer(
       currentBoardGuid: guid,
     };
   }),
+  on(boardActions.loadAppDataSuccess, (state, { data }) => {
+    return {
+      ...state,
+      ...data,
+    };
+  }),
+  on(boardActions.addCard, (state, { guid, card }) => {
+    return {
+      ...state,
+      boards: state.boards.map((board) => {
+        if (board.guid === state.currentBoardGuid) {
+          return {
+            ...board,
+            placedCards: [...board.placedCards, card],
+          };
+        }
+        return board;
+      }),
+    };
+  }),
   on(boardActions.createNewBoard, (state) => {
     const guid = generateGuid();
     return {
       ...state,
+      currentBoardGuid: guid,
       boards: [
         ...state.boards,
         {
@@ -149,17 +192,73 @@ export const appReducer: ActionReducer<ApplicationState> = createReducer(
       ],
     };
   }),
+  on(boardActions.renameBoard, (state, { guid, text }) => {
+    return {
+      ...state,
+      boards: state.boards.map((board) => {
+        if (board.guid === guid) {
+          return {
+            ...board,
+            alias: text,
+          };
+        }
+        return board;
+      }),
+    };
+  }),
+  on(boardActions.deleteBoard, (state, { guid }) => {
+    const otherBoards = state.boards.filter((board) => board.guid !== guid);
+    const newSelectedBoard =
+      state.currentBoardGuid !== guid
+        ? state.currentBoardGuid
+        : otherBoards.length > 0
+          ? otherBoards[0].guid
+          : '';
+    return {
+      ...state,
+      boards: state.boards.filter((board) => board.guid !== guid),
+      currentBoardGuid: newSelectedBoard,
+    };
+  }),
+  on(boardActions.moveCard, (state, { guid, x, y, cardGuid }) => {
+    return {
+      ...state,
+      boards: state.boards.map((board) => {
+        if (board.guid === state.currentBoardGuid) {
+          return {
+            ...board,
+            placedCards: board.placedCards.map((card) => {
+              if (card.guid === cardGuid) {
+                return {
+                  ...card,
+                  position: {
+                    x,
+                    y,
+                  },
+                };
+              }
+              return card;
+            }),
+          };
+        }
+        return board;
+      }),
+    };
+  }),
+  on(boardActions.removeCard, (state, { guid, cardGuid }) => {
+    return {
+      ...state,
+      boards: state.boards.map((board) => {
+        if (board.guid === state.currentBoardGuid) {
+          return {
+            ...board,
+            placedCards: board.placedCards.filter(
+              (card) => card.guid !== cardGuid,
+            ),
+          };
+        }
+        return board;
+      }),
+    };
+  }),
 );
-
-export const generateGuid = () => {
-  let result, i, j;
-  result = '';
-  for (j = 0; j < 32; j++) {
-    if (j == 8 || j == 12 || j == 16 || j == 20) result = result + '-';
-    i = Math.floor(Math.random() * 16)
-      .toString(16)
-      .toUpperCase();
-    result = result + i;
-  }
-  return result;
-};
