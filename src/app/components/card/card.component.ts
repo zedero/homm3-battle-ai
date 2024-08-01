@@ -6,7 +6,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { Card } from '../../config/data';
+import { Card, TIER, TierName } from '../../config/data';
 
 export type MoveCard = {
   card: Card;
@@ -34,11 +34,13 @@ export class CardComponent implements OnChanges {
 
   isHighlighted = false;
   isEnemy = false;
+  tier = 'bronze';
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['card']) {
       if (this.card) {
         this._card = this.card;
+        this.tier = TIER[this._card.tier].toLowerCase();
         this.isEnemy = this._card.isEnemy;
       }
     }

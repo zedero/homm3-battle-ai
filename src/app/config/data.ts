@@ -15,10 +15,10 @@ export enum TIER {
 }
 
 export const TierName = {
-  Bronze: [TIER.BRONZE],
-  Silver: [TIER.SILVER],
-  Gold: [TIER.GOLD],
-  Azure: [TIER.AZURE],
+  Bronze: TIER.BRONZE,
+  Silver: TIER.SILVER,
+  Gold: TIER.GOLD,
+  Azure: TIER.AZURE,
 };
 
 export enum TYPE {

@@ -443,7 +443,7 @@ export class BattleBoardComponent implements OnInit, OnChanges {
 
   getTier = (tier: string) => {
     // @ts-ignore
-    return TierName[tier][0];
+    return TierName[tier];
   };
 
   getUnitType = (tier: string) => {

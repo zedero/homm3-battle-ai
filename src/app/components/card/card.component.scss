@@ -14,6 +14,7 @@
   border: 2px solid forestgreen;
   border-radius: 4px;
   background: white;
+  justify-content: space-between;
 
   &.isEnemy {
     border-color: red;
@@ -29,15 +30,17 @@
 
   .name {
     user-select: none;
+    min-height: 40px;
   }
 
   .initiative {
     user-select: none;
     display: flex;
+    align-items: center;
   }
 
   &_toolbar {
-    margin-top: auto;
+    //margin-top: auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -48,6 +51,28 @@
 
     .mat-icon:only-child {
       margin-left: auto;
+    }
+  }
+
+  .tier {
+    height: 8px;
+    width: 8px;
+    display: inline-block;
+    //background-color: red;
+    border-radius: 50%;
+    margin-right: 5px;
+
+    &.bronze {
+      background-color: saddlebrown;
+    }
+    &.silver {
+      background-color: silver;
+    }
+    &.gold {
+      background-color: goldenrod;
+    }
+    &.azure {
+      background-color: #069AF3;
     }
   }
 }
