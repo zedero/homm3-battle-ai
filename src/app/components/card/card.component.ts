@@ -55,9 +55,11 @@ export class CardComponent implements OnChanges {
   }
 
   public snap(event: any) {
+    console.log(event, event.event.clientX);
+
     const collisionElements = document.elementsFromPoint(
-      event.event.clientX,
-      event.event.clientY,
+      event?.event?.clientX ? event?.event?.clientX : event.dropPoint.x,
+      event?.event?.clientY ? event?.event?.clientY : event.dropPoint.y,
     );
 
     const target = collisionElements.find((element: Element) => {
