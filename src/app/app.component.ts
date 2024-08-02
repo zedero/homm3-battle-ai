@@ -20,9 +20,8 @@ export class AppComponent implements OnInit {
   currentBoard$: Observable<Board | undefined> =
     this.store.select(getCurrentBoard);
 
-  isBattleActive$: Observable<boolean> = this.store
-    .select(getIfBattleActive)
-    .pipe(map((isActive) => !isActive));
+  isBattleActive$: Observable<boolean> = this.store.select(getIfBattleActive);
+  // .pipe(map((isActive) => !isActive));
 
   allBoard$: Observable<Board[] | undefined> = this.store.select(getBoards);
   ngOnInit() {

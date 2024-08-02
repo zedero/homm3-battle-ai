@@ -5,4 +5,9 @@
   border-image-source: linear-gradient(to bottom, #b4a46d, #9e8236);
   border-image-slice: 3;
   border-image-width: 3px;
+  transition: margin-top .6s ease-in-out;
+
+  &.hide {
+    margin-top: -60px;
+  }
 }
