@@ -65,7 +65,8 @@ export class BattleBoardComponent implements OnInit, OnChanges {
         this.state.transition('IDLE');
       }
       this.boardGuid = changes['boardData'].currentValue.guid;
-      this.placedCards = changes['boardData'].currentValue.placedCards;
+      this.placedCards = changes['boardData'].currentValue
+        .placedCards as Card[];
     }
   }
 
@@ -212,32 +213,33 @@ export class BattleBoardComponent implements OnInit, OnChanges {
     } else {
       this.removePlayerUnplacedCard(newCard.card);
     }
-
-    // this.store.dispatch(
-    //   boardActions.move({
-    //     guid: this.boardData?.guid ? this.boardData.guid : '',
-    //   }),
-    // );
   }
 
   public moveCard(movedCard: MoveCard) {
-    // console.log('! MOVE', movedCard.card.name, movedCard.position.row, movedCard.position.cell)
     const card = this.placedCards.find(
       (card) => card.name === movedCard.card.name,
     );
 
-    const occupiedByCard = this.placedCards.find(
-      (card) =>
+    if (!card) {
+      return;
+    }
+
+    const occupiedByCard: Card | undefined = this.placedCards.find(
+      (card: Card) =>
         card.position.x === movedCard.position.x &&
         card.position.y === movedCard.position.y,
     );
 
-    if (!card || occupiedByCard) {
-      return;
+    if (occupiedByCard) {
+      this.store.dispatch(
+        boardActions.moveCard({
+          cardGuid: occupiedByCard.guid,
+          guid: this.boardData?.guid ? this.boardData.guid : '',
+          x: card.position.x,
+          y: card.position.y,
+        }),
+      );
     }
-
-    // card.position.x = movedCard.position.x;
-    // card.position.y = movedCard.position.y;
 
     this.store.dispatch(
       boardActions.moveCard({
