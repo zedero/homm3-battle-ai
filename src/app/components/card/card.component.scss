@@ -2,6 +2,10 @@
   height: 100%;
   width: 100%;
   display: block;
+
+}
+.cdk-drag:not(.cdk-drag-dragging) {
+  transition: transform .15s ease;
 }
 
 .card {
@@ -15,6 +19,8 @@
   border-radius: 4px;
   background: white;
   justify-content: space-between;
+
+
 
   &.isEnemy {
     border-color: red;
