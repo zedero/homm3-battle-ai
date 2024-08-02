@@ -146,6 +146,7 @@ export const initialState: ApplicationState = {
   ],
   currentBoardGuid: '0000001',
   battleStarted: false,
+  storeVersion: '1.0',
 };
 
 export const appReducer: ActionReducer<ApplicationState> = createReducer(
