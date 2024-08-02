@@ -1,13 +1,16 @@
 <div class="background"></div>
 <div class="toolbar" [class.hide]="isBattleActive$ | async">
-  <ng-container *ngFor="let board of allBoard$ | async">
-    <button (click)="selectBoard(board.guid)">
-      {{ board.alias }}
-      <button (click)="renameBoard($event, board.guid)"><i class="fa-solid fa-pen"></i></button>
-      <button (click)="deleteBoard($event, board.guid)"><i class="fa-regular fa-trash-can"></i></button>
-    </button>
+
+    <div class="toolbar-container">
+      <ng-container *ngFor="let board of allBoard$ | async">
+      <button (click)="selectBoard(board.guid)">
+        {{ board.alias }}
+        <button (click)="renameBoard($event, board.guid)"><i class="fa-solid fa-pen"></i></button>
+        <button (click)="deleteBoard($event, board.guid)"><i class="fa-regular fa-trash-can"></i></button>
+      </button>
   </ng-container>
   <button (click)="createBoard()">Create new board</button>
+    </div>
 </div>
 
 <app-battle-board
