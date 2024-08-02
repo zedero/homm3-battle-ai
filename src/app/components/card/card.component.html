@@ -42,6 +42,7 @@
       check_box_outline_blank
     </span>
     <span
+      (click)="select()"
       *ngIf="isHighlighted && selectedCard?.name === _card.name"
       class="material-symbols-outlined">
       check_box

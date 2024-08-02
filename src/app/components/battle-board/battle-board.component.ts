@@ -268,8 +268,13 @@ export class BattleBoardComponent implements OnInit, OnChanges {
     this.state.transition('PLAYER.END');
   }
   public selectCard(selectCard: Card | undefined) {
-    this.selectedPlayerCard = selectCard;
-    this.state.transition('PLAYER.SELECTED');
+    if (this.selectedPlayerCard?.guid === selectCard?.guid) {
+      this.selectedPlayerCard = undefined;
+      this.state.transition('PLAYER.TURN');
+    } else {
+      this.selectedPlayerCard = selectCard;
+      this.state.transition('PLAYER.SELECTED');
+    }
   }
 
   public endEnemyTurn() {
