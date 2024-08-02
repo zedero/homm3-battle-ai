@@ -129,6 +129,9 @@ export class BattleBoardComponent implements OnInit, OnChanges {
           target: { x: -1, y: -1 },
         };
         this.highlightedUnits$.next([]);
+        this.store.dispatch(boardActions.isBattleActive({ isActive: false }));
+      } else {
+        this.store.dispatch(boardActions.isBattleActive({ isActive: true }));
       }
       if (state === 'PLAYER.END') {
         this.state.transition('NEXT.UNIT');

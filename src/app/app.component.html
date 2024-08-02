@@ -1,5 +1,5 @@
 <div class="background"></div>
-<div class="toolbar">
+<div class="toolbar" *ngIf="isBattleActive$ | async">
   <ng-container *ngFor="let board of allBoard$ | async">
     <button (click)="selectBoard(board.guid)">
       {{ board.alias }}

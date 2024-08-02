@@ -11,4 +11,5 @@ export type Board = {
 export interface ApplicationState {
   boards: Board[];
   currentBoardGuid: string | undefined;
+  battleStarted: boolean;
 }

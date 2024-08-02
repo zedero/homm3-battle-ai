@@ -145,6 +145,7 @@ export const initialState: ApplicationState = {
     },
   ],
   currentBoardGuid: '0000001',
+  battleStarted: false,
 };
 
 export const appReducer: ActionReducer<ApplicationState> = createReducer(
@@ -173,6 +174,12 @@ export const appReducer: ActionReducer<ApplicationState> = createReducer(
         }
         return board;
       }),
+    };
+  }),
+  on(boardActions.isBattleActive, (state, { isActive }) => {
+    return {
+      ...state,
+      battleStarted: isActive,
     };
   }),
   on(boardActions.createNewBoard, (state) => {

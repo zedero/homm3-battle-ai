@@ -17,5 +17,6 @@ export const boardActions = createActionGroup({
     renameBoard: props<{ guid: string; text: string }>(),
     deleteBoard: props<{ guid: string }>(),
     selectBoard: props<{ guid: string }>(),
+    isBattleActive: props<{ isActive: boolean }>(),
   },
 });

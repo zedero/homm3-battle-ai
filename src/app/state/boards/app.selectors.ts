@@ -14,6 +14,11 @@ export const selectSelectedBoardGuid = createSelector(
   (state: ApplicationState) => state.currentBoardGuid,
 );
 
+export const getIfBattleActive = createSelector(
+  selectAppState,
+  (state: ApplicationState) => state.battleStarted,
+);
+
 export const getBoards = createSelector(
   selectAppState,
   (state: ApplicationState) => {

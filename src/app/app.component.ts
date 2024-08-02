@@ -1,8 +1,12 @@
 import { OnInit, Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ApplicationState, Board } from './state/boards/app.state';
-import { Observable } from 'rxjs';
-import { getBoards, getCurrentBoard } from './state/boards/app.selectors';
+import { map, Observable } from 'rxjs';
+import {
+  getBoards,
+  getCurrentBoard,
+  getIfBattleActive,
+} from './state/boards/app.selectors';
 import { boardActions } from './state/boards/app.actions';
 
 @Component({
@@ -15,6 +19,10 @@ export class AppComponent implements OnInit {
 
   currentBoard$: Observable<Board | undefined> =
     this.store.select(getCurrentBoard);
+
+  isBattleActive$: Observable<boolean> = this.store
+    .select(getIfBattleActive)
+    .pipe(map((isActive) => !isActive));
 
   allBoard$: Observable<Board[] | undefined> = this.store.select(getBoards);
   ngOnInit() {
