@@ -19,8 +19,8 @@ export const generateGuid = () => {
 export const initialState: ApplicationState = {
   boards: [
     {
-      guid: '0000001',
-      alias: 'TestAlias',
+      guid: 'TEST-GUID-0000001',
+      alias: 'Example Player board',
       placedCards: [
         {
           guid: generateGuid(),
@@ -144,7 +144,7 @@ export const initialState: ApplicationState = {
       enemyBenchedCards: [],
     },
   ],
-  currentBoardGuid: '0000001',
+  currentBoardGuid: 'TEST-GUID-0000001',
   battleStarted: false,
   storeVersion: '1.0',
 };
